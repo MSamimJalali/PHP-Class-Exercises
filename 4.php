@@ -1,40 +1,29 @@
 <?php
-
-class InvalidTypeException extends Exception {}
-
-function detectDataType($variable) {
+function detectingDataType($variable) {
     $type = gettype($variable);
 
-    // Check for resource type
-    if ($type === 'resource') {
-        throw new InvalidTypeException("Invalid type encountered: resource");
+    if ($type === "resource") {
+        throw new Exception("Invalid type: Resource types are not allowed.");
     }
 
     return $type;
 }
 
-function displayDataTypes(array $variables) {
-    foreach ($variables as $key => $value) {
-        try {
-            $type = detectDataType($value);
-            echo "Variable '{$key}' is of type: {$type}" . PHP_EOL;
-        } catch (InvalidTypeException $e) {
-            echo "Error: " . $e->getMessage() . PHP_EOL;
-        }
-    }
-}
-
-// Example usage
+// Example:
 $variables = [
-    'integer' => 42,
-    'string' => 'Hello, World!',
-    'array' => [1, 2, 3],
-    'float' => 3.14,
-    'boolean' => true,
-    'object' => new stdClass(),
-    // Uncomment the next line to test the exception
-    // 'resource' => fopen('php://stdout', 'w'), 
+    123,                        // Integer
+    "Hello, world!",            // String
+    45.67,                      // Float
+    [1, 2, 3],                  // Array
+    fopen("test.txt", "r"),     // Resource (will throw an exception)
+    true                        // Boolean
 ];
 
-displayDataTypes($variables);
+try {
+    foreach ($variables as $variable) {
+        echo "Value: " . var_export($variable, true) . " | Type: " . detectingDataType($variable) . PHP_EOL;
+    }
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+}
 ?>
